@@ -33,6 +33,16 @@ body {
     height: 75px;
     background-color: grey;
     opacity: .6;
+    color: white;
+    font-size: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+span {
+    padding-right: 10px;
 }
 
 .double {
@@ -55,7 +65,7 @@ body {
 }
 
 button {
-    font-size: 15px;
+    font-size: 18px;
     outline: none;
     border: 1px solid black;
 }
@@ -63,3 +73,4 @@ button {
 .grey {
     background-color: grey;
 }
+
