@@ -5,6 +5,8 @@
 // TARGET ELEMENTS
 const currentNumberDisplay = document.getElementById("number_display");
 const acButton = document.getElementById("ac");
+const decimalButton = document.getElementById("decimal");
+const equalButton = document.getElementById("equals");
 
 let currentOperation = [];
 
@@ -34,36 +36,90 @@ function handleNumberClick(digit) {
 
 // Function to handle a math operator being clicked
 function handleOperatorClick(operator) {
-    console.log('operator is', operator)
-    currentOperation.push(operator)
+	currentOperation.push(operator);
+	setCurrentDisplay();
 }
 
+function handleDecimalClick() {
+	currentOperation.push(".");
+	setCurrentDisplay();
+}
 
 // Function to handle the current display in the number box
 function setCurrentDisplay() {
-	if (typeof currentOperation[currentOperation.length - 1] !== "number") {
-		console.log("first if statement hit");
+	if (
+		typeof currentOperation[currentOperation.length - 1] !== "number" &&
+		currentOperation[currentOperation.length - 1] !== "."
+	) {
 		currentNumberDisplay.innerText = "";
 	} else if (
 		currentOperation.length === 1 &&
 		typeof currentOperation[currentOperation.length - 1] === "number"
 	) {
-		console.log("else if statement hit");
 		currentNumberDisplay.innerText =
 			currentOperation[currentOperation.length - 1];
 	} else {
 		let currentIndex = currentOperation.length - 1;
 		let currentNums = "";
 
-		while (
-			currentIndex >= 0 &&
-			typeof currentOperation[currentIndex] === "number"
-		) {
-			currentNums += currentOperation[currentIndex].toString();
-			currentIndex--;
+		while (currentIndex >= 0) {
+			if (
+				typeof currentOperation[currentIndex] === "string" &&
+				currentOperation[currentIndex] !== "."
+			)
+				break;
+			else {
+				currentNums += currentOperation[currentIndex].toString();
+				currentIndex--;
+			}
 		}
 		currentNumberDisplay.innerText = currentNums.split("").reverse().join("");
 	}
+}
+
+// Function to handle the equation
+function handleEquation() {
+	const modArr = [];
+	let currentNumStr = "";
+
+	for (let i = 0; i < currentOperation.length; i++) {
+		const currentEl = currentOperation[i];
+
+		if (currentEl === ".") {
+			currentNumStr += ".";
+		} else if (typeof currentEl === "number") {
+			currentNumStr += currentEl.toString();
+
+			if (i + 1 === currentOperation.length) {
+				modArr.push(parseFloat(currentNumStr));
+			}
+		} else {
+			modArr.push(parseFloat(currentNumStr));
+			modArr.push(currentEl);
+
+			currentNumStr = "";
+		}
+	}
+
+	let finalVal;
+
+	for (let i = 0; i < modArr.length; i++) {
+		if (i === 0) {
+			finalVal = modArr[i];
+		} else if (modArr[i - 1] === "+") {
+			finalVal += modArr[i];
+		} else if (modArr[i - 1] === "-") {
+			finalVal -= modArr[i];
+		} else if (modArr[i - 1] === "*") {
+			finalVal *= modArr[i];
+		} else if (modArr[i - 1] === "/") {
+			finalVal /= modArr[i];
+		} else {
+			continue;
+		}
+	}
+
+	currentNumberDisplay.innerText = finalVal.toFixed(2);
 }
 
 // Function to handle if AC is clicked
@@ -71,7 +127,6 @@ function handleAcClick() {
 	currentOperation = [];
 	currentNumberDisplay.innerText = 0;
 }
-
 
 // EVENT LISTENERS
 
@@ -85,6 +140,9 @@ nums.forEach((num) => {
 
 // AC/Clear event listener
 acButton.addEventListener("click", handleAcClick);
+
+// Decimal event listener
+decimalButton.addEventListener("click", handleDecimalClick);
 
 // Operators event listener
 mathSymbols.forEach((symbol) => {
@@ -104,3 +162,6 @@ mathSymbols.forEach((symbol) => {
 		});
 	}
 });
+
+// Equal event listener
+equalButton.addEventListener("click", handleEquation);
