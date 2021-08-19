@@ -40,6 +40,7 @@ function handleOperatorClick(operator) {
 	setCurrentDisplay();
 }
 
+// Function to handle decimal being clicked
 function handleDecimalClick() {
 	currentOperation.push(".");
 	setCurrentDisplay();
@@ -163,5 +164,5 @@ mathSymbols.forEach((symbol) => {
 	}
 });
 
-// Equal event listener
+// Equals event listener
 equalButton.addEventListener("click", handleEquation);
